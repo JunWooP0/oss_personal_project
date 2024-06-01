@@ -13,7 +13,6 @@ BLUE = (0, 0, 255)
 GRAY = (128, 128, 128)
 
 
-# 타워 정의
 class Tower(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
@@ -21,8 +20,16 @@ class Tower(pygame.sprite.Sprite):
         self.image.fill(BLUE)
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
+        self.range = 100  # 타워의 공격 범위
 
-# 적 정의
+    #공격 정의
+    def attack(self, enemies):
+        for enemy in enemies:
+            distance = pygame.math.Vector2(self.rect.center).distance_to(enemy.rect.center)
+            if distance <= self.range:
+                enemy.kill()
+
+
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
@@ -35,10 +42,10 @@ class Enemy(pygame.sprite.Sprite):
     def update(self):
         self.rect.x += self.speed
 
-# 타워 생성
+
 towers = pygame.sprite.Group()
 
-# 적 생성
+
 enemies = pygame.sprite.Group()
 enemy = Enemy(0, 300)
 enemies.add(enemy)
@@ -56,8 +63,14 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            x, y = event.pos
+            place_tower(x, y)
         
     enemies.update()
+
+    for tower in towers:
+        tower.attack(enemies)
 
     screen.fill(GRAY) 
     towers.draw(screen)
