@@ -22,11 +22,11 @@ class Tower(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
         self.range = 150
-        self.fire_rate = 60  # 발사 주기
+        self.fire_rate = 60
         self.last_shot = pygame.time.get_ticks()
 
 
-    def attack(self, enemies, projectiles): #발사체 추가
+    def attack(self, enemies, projectiles):
         now = pygame.time.get_ticks()
         if now - self.last_shot >= self.fire_rate:
             for enemy in enemies:
@@ -46,11 +46,25 @@ class Enemy(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
         self.speed = 0.55
+        self.max_health = 40  # 최대 체력
+        self.health = self.max_health  # 현재 체력
 
     def update(self):
         self.rect.x += self.speed
 
-# 발사체 정의
+    def take_damage(self, damage):
+        self.health -= damage
+        if self.health <= 0:
+            self.kill()
+
+    #체력바
+    def draw_health_bar(self, surface):
+        if self.health > 0:
+            health_ratio = self.health / self.max_health
+            pygame.draw.rect(surface, RED, (self.rect.x, self.rect.y - 10, 30, 5))
+            pygame.draw.rect(surface, GREEN, (self.rect.x, self.rect.y - 10, 30 * health_ratio, 5))
+
+
 class Projectile(pygame.sprite.Sprite):
     def __init__(self, pos, target):
         super().__init__()
@@ -60,6 +74,7 @@ class Projectile(pygame.sprite.Sprite):
         self.rect.center = pos
         self.target = target
         self.speed = 5
+        self.damage = 1
 
     def update(self):
         if self.target.alive():
@@ -68,19 +83,16 @@ class Projectile(pygame.sprite.Sprite):
                 direction = direction.normalize() * self.speed
             self.rect.move_ip(direction)
             if self.rect.colliderect(self.target.rect):
-                self.target.kill()
+                self.target.take_damage(self.damage)
                 self.kill()
         else:
             self.kill()
 
 
 towers = pygame.sprite.Group()
-
-
 enemies = pygame.sprite.Group()
 enemy = Enemy(0, 300)
 enemies.add(enemy)
-
 projectiles = pygame.sprite.Group()
 
 def place_tower(x, y):
@@ -108,8 +120,12 @@ while running:
     towers.draw(screen)
     enemies.draw(screen)
     projectiles.draw(screen)
-    pygame.display.flip()
 
+    for enemy in enemies:
+        enemy.draw_health_bar(screen)  # 체력바 그리기
+
+
+    pygame.display.flip()
     clock.tick(60)
 
 pygame.quit()
