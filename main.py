@@ -25,7 +25,6 @@ class Tower(pygame.sprite.Sprite):
         self.fire_rate = 60
         self.last_shot = pygame.time.get_ticks()
 
-
     def attack(self, enemies, projectiles):
         now = pygame.time.get_ticks()
         if now - self.last_shot >= self.fire_rate:
@@ -46,8 +45,8 @@ class Enemy(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
         self.speed = 0.55
-        self.max_health = 40  # 최대 체력
-        self.health = self.max_health  # 현재 체력
+        self.max_health = 40
+        self.health = self.max_health
 
     def update(self):
         self.rect.x += self.speed
@@ -57,7 +56,6 @@ class Enemy(pygame.sprite.Sprite):
         if self.health <= 0:
             self.kill()
 
-    #체력바
     def draw_health_bar(self, surface):
         if self.health > 0:
             health_ratio = self.health / self.max_health
@@ -91,8 +89,6 @@ class Projectile(pygame.sprite.Sprite):
 
 towers = pygame.sprite.Group()
 enemies = pygame.sprite.Group()
-enemy = Enemy(0, 300)
-enemies.add(enemy)
 projectiles = pygame.sprite.Group()
 
 def place_tower(x, y):
@@ -101,6 +97,16 @@ def place_tower(x, y):
 
 place_tower(400, 300)
 
+def spawn_enemy():
+    enemy = Enemy(0, 300)
+    enemies.add(enemy)
+
+wave = 1
+enemies_spawned = 0
+next_wave_time = pygame.time.get_ticks() + 10000  # 10초 후에 다음 웨이브 시작
+spawn_interval = 1000  # 적이 1초마다 생성
+last_spawn_time = pygame.time.get_ticks()
+
 clock = pygame.time.Clock()
 
 running = True
@@ -108,25 +114,33 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        
-        
+
+    current_time = pygame.time.get_ticks()
+    if current_time >= next_wave_time:
+        wave += 1
+        enemies_spawned = 0
+        next_wave_time = current_time + 20000  # 다음 웨이브 타이머 20초로 설정
+
+    if enemies_spawned < wave and current_time - last_spawn_time >= spawn_interval:
+        spawn_enemy()
+        enemies_spawned += 1
+        last_spawn_time = current_time
+
     enemies.update()
     projectiles.update()
 
     for tower in towers:
         tower.attack(enemies, projectiles)
 
-    screen.fill(GRAY) 
+    screen.fill(GRAY)
     towers.draw(screen)
     enemies.draw(screen)
     projectiles.draw(screen)
 
     for enemy in enemies:
-        enemy.draw_health_bar(screen)  # 체력바 그리기
-
+        enemy.draw_health_bar(screen)
 
     pygame.display.flip()
     clock.tick(60)
 
 pygame.quit()
-
