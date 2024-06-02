@@ -14,19 +14,44 @@ GRAY = (128, 128, 128)
 YELLOW = (255, 255, 0)
 MINT = (0, 255, 255)
 
-# 폰트 설정
 font = pygame.font.SysFont(None, 36)
 
 class Tower(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__()
-        self.image = pygame.Surface((50, 50))
-        self.image.fill(BLUE)
+        self.upgrade_level = -1
+        self.shapes = ['triangle', 'square', 'pentagon', 'hexagon', 'heptagon']
+        self.image = self.create_shape(self.shapes[self.upgrade_level])
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
         self.range = 150
         self.fire_rate = 60
         self.last_shot = pygame.time.get_ticks()
+
+    def create_shape(self, shape):
+        size = 50
+        image = pygame.Surface((size, size), pygame.SRCALPHA)
+        if shape == 'triangle':
+            points = [(size // 2, 0), (size, size), (0, size)]
+        elif shape == 'square':
+            points = [(0, 0), (size, 0), (size, size), (0, size)]
+        elif shape == 'pentagon':
+            points = [(size // 2, 0), (size, size // 3), (2 * size // 3, size), (size // 3, size), (0, size // 3)]
+        elif shape == 'hexagon':
+            points = [(size // 2, 0), (size, size // 4), (size, 3 * size // 4), (size // 2, size), (0, 3 * size // 4), (0, size // 4)]
+        elif shape == 'heptagon':
+            points = [(size // 2, 0), (size, size // 6), (size, 5 * size // 6), (size // 2, size), (0, 5 * size // 6), (0, size // 6)]
+        pygame.draw.polygon(image, BLUE, points)
+        return image
+
+    #업그레이드 정의
+    def upgrade(self):
+        self.upgrade_level += 1
+        new_shape = self.shapes[min(self.upgrade_level, len(self.shapes) - 1)]
+        self.image = self.create_shape(new_shape)
+        self.rect = self.image.get_rect(center=self.rect.center)
+        self.range += 20
+        self.fire_rate = max(10, self.fire_rate - 10)
 
     def attack(self, enemies, projectiles):
         now = pygame.time.get_ticks()
@@ -94,7 +119,7 @@ class Projectile(pygame.sprite.Sprite):
             if direction.length() > self.speed:
                 direction = direction.normalize() * self.speed
             self.rect.move_ip(direction)
-            if self.rect.colliderect(self.target.rect):   #money 추가
+            if self.rect.colliderect(self.target.rect): 
                 if self.target.take_damage(self.damage):
                     global money
                     money += 10
@@ -113,14 +138,26 @@ path = [
     (800, 300)
 ]
 
-# 타워 위치 정의
 tower_positions = [
     (100, 250), (200, 350), (300, 150), (400, 550), (500, 150), (600, 350)
 ]
 
+money = 150
+
 def place_tower(x, y):
     tower = Tower(x, y)
     towers.add(tower)
+    global money           #타워 추가 조건
+    for tower in towers:
+        if tower.rect.center == (x, y):
+            if money >= 50:
+                money -= 50
+                tower.upgrade()
+            return
+    if money >= 50:
+        money -= 50
+        tower = Tower(x, y)
+        towers.add(tower)
 
 place_tower(400, 300)
 
@@ -129,7 +166,6 @@ def spawn_enemy():
     enemies.add(enemy)
 
 wave = 1
-money = 0
 enemies_spawned = 0
 next_wave_time = pygame.time.get_ticks() + 10000
 spawn_interval = 1000
@@ -142,6 +178,12 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:  # 좌클릭으로 타워 추가
+            mouse_pos = pygame.mouse.get_pos()
+            for pos in tower_positions:
+                if pygame.math.Vector2(mouse_pos).distance_to(pos) < 25:
+                    place_tower(*pos)
+                    break
 
     current_time = pygame.time.get_ticks()
     if current_time >= next_wave_time:
@@ -165,7 +207,6 @@ while running:
     for i in range(len(path) - 1):
         pygame.draw.line(screen, BLACK, path[i], path[i + 1], 10)
 
-    # 타워 설치 가능한 위치 표시
     for pos in tower_positions:
         pygame.draw.circle(screen, MINT, pos, 25, 2)
 
@@ -176,7 +217,6 @@ while running:
     for enemy in enemies:
         enemy.draw_health_bar(screen)
 
-    # 웨이브와 돈 표시
     wave_text = font.render(f'Wave: {wave}', True, WHITE)
     screen.blit(wave_text, (10, 10))
     money_text = font.render(f'Money: {money}', True, WHITE)
