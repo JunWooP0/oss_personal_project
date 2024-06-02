@@ -15,6 +15,7 @@ RUN apt-get update -q \
     wget \
     xpra \
     xserver-xorg-dev \
+    fontconfig \ 
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 

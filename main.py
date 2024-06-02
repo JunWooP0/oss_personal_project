@@ -13,6 +13,8 @@ BLUE = (0, 0, 255)
 GRAY = (128, 128, 128)
 YELLOW = (255, 255, 0)
 
+# 폰트 설정
+font = pygame.font.SysFont(None, 36)
 
 class Tower(pygame.sprite.Sprite):
     def __init__(self, x, y):
@@ -50,7 +52,6 @@ class Enemy(pygame.sprite.Sprite):
         self.max_health = 40
         self.health = self.max_health
 
-    #경로를 따라 이동
     def update(self):
         if self.path_index < len(self.path) - 1:
             target = self.path[self.path_index + 1]
@@ -65,6 +66,8 @@ class Enemy(pygame.sprite.Sprite):
         self.health -= damage
         if self.health <= 0:
             self.kill()
+            return True
+        return False
 
     def draw_health_bar(self, surface):
         if self.health > 0:
@@ -90,8 +93,10 @@ class Projectile(pygame.sprite.Sprite):
             if direction.length() > self.speed:
                 direction = direction.normalize() * self.speed
             self.rect.move_ip(direction)
-            if self.rect.colliderect(self.target.rect):
-                self.target.take_damage(self.damage)
+            if self.rect.colliderect(self.target.rect):   #money 추가
+                if self.target.take_damage(self.damage):
+                    global money
+                    money += 10
                 self.kill()
         else:
             self.kill()
@@ -101,7 +106,6 @@ towers = pygame.sprite.Group()
 enemies = pygame.sprite.Group()
 projectiles = pygame.sprite.Group()
 
-#이동 경로 정의
 path = [(0, 300), (100, 300), (100, 200), (200, 200), (200, 400), (300, 400), (300, 100), (400, 100), (400, 500), (500, 500), (500, 300), (600, 300), (600, 100), (700, 100), (700, 500), (800, 500)]
 
 def place_tower(x, y):
@@ -115,6 +119,7 @@ def spawn_enemy():
     enemies.add(enemy)
 
 wave = 1
+money = 0
 enemies_spawned = 0
 next_wave_time = pygame.time.get_ticks() + 10000
 spawn_interval = 1000
@@ -147,10 +152,8 @@ while running:
 
     screen.fill(GRAY)
 
-    #검은색 경로
     for i in range(len(path) - 1):
         pygame.draw.line(screen, BLACK, path[i], path[i + 1], 10)
-
 
     towers.draw(screen)
     enemies.draw(screen)
@@ -158,6 +161,12 @@ while running:
 
     for enemy in enemies:
         enemy.draw_health_bar(screen)
+
+    # 웨이브와 돈 표시
+    wave_text = font.render(f'Wave: {wave}', True, WHITE)
+    screen.blit(wave_text, (10, 10))
+    money_text = font.render(f'Money: {money}', True, WHITE)
+    screen.blit(money_text, (screen.get_width() - 150, 10))
 
     pygame.display.flip()
     clock.tick(60)
