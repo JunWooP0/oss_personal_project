@@ -12,6 +12,7 @@ RED = (255, 0, 0)
 BLUE = (0, 0, 255)
 GRAY = (128, 128, 128)
 YELLOW = (255, 255, 0)
+MINT = (0, 255, 255)
 
 # 폰트 설정
 font = pygame.font.SysFont(None, 36)
@@ -101,12 +102,21 @@ class Projectile(pygame.sprite.Sprite):
         else:
             self.kill()
 
-
 towers = pygame.sprite.Group()
 enemies = pygame.sprite.Group()
 projectiles = pygame.sprite.Group()
 
-path = [(0, 300), (100, 300), (100, 200), (200, 200), (200, 400), (300, 400), (300, 100), (400, 100), (400, 500), (500, 500), (500, 300), (600, 300), (600, 100), (700, 100), (700, 500), (800, 500)]
+path = [
+    (0, 300), (50, 300), (50, 200), (150, 200), (150, 400),
+    (250, 400), (250, 100), (350, 100), (350, 500), (450, 500),
+    (450, 100), (550, 100), (550, 400), (650, 400), (650, 300), 
+    (800, 300)
+]
+
+# 타워 위치 정의
+tower_positions = [
+    (100, 250), (200, 350), (300, 150), (400, 550), (500, 150), (600, 350)
+]
 
 def place_tower(x, y):
     tower = Tower(x, y)
@@ -154,6 +164,10 @@ while running:
 
     for i in range(len(path) - 1):
         pygame.draw.line(screen, BLACK, path[i], path[i + 1], 10)
+
+    # 타워 설치 가능한 위치 표시
+    for pos in tower_positions:
+        pygame.draw.circle(screen, MINT, pos, 25, 2)
 
     towers.draw(screen)
     enemies.draw(screen)
