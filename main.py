@@ -38,18 +38,28 @@ class Tower(pygame.sprite.Sprite):
 
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, x, y):
+    def __init__(self, path):
         super().__init__()
         self.image = pygame.Surface((30, 30))
         self.image.fill(RED)
         self.rect = self.image.get_rect()
-        self.rect.center = (x, y)
-        self.speed = 0.55
+        self.path = path
+        self.path_index = 0
+        self.rect.center = self.path[self.path_index]
+        self.speed = 2
         self.max_health = 40
         self.health = self.max_health
 
+    #경로를 따라 이동
     def update(self):
-        self.rect.x += self.speed
+        if self.path_index < len(self.path) - 1:
+            target = self.path[self.path_index + 1]
+            direction = pygame.math.Vector2(target) - pygame.math.Vector2(self.rect.center)
+            if direction.length() > self.speed:
+                direction = direction.normalize() * self.speed
+            self.rect.move_ip(direction)
+            if self.rect.center == target:
+                self.path_index += 1
 
     def take_damage(self, damage):
         self.health -= damage
@@ -91,6 +101,9 @@ towers = pygame.sprite.Group()
 enemies = pygame.sprite.Group()
 projectiles = pygame.sprite.Group()
 
+#이동 경로 정의
+path = [(0, 300), (100, 300), (100, 200), (200, 200), (200, 400), (300, 400), (300, 100), (400, 100), (400, 500), (500, 500), (500, 300), (600, 300), (600, 100), (700, 100), (700, 500), (800, 500)]
+
 def place_tower(x, y):
     tower = Tower(x, y)
     towers.add(tower)
@@ -98,13 +111,13 @@ def place_tower(x, y):
 place_tower(400, 300)
 
 def spawn_enemy():
-    enemy = Enemy(0, 300)
+    enemy = Enemy(path)
     enemies.add(enemy)
 
 wave = 1
 enemies_spawned = 0
-next_wave_time = pygame.time.get_ticks() + 10000  # 10초 후에 다음 웨이브 시작
-spawn_interval = 1000  # 적이 1초마다 생성
+next_wave_time = pygame.time.get_ticks() + 10000
+spawn_interval = 1000
 last_spawn_time = pygame.time.get_ticks()
 
 clock = pygame.time.Clock()
@@ -119,7 +132,7 @@ while running:
     if current_time >= next_wave_time:
         wave += 1
         enemies_spawned = 0
-        next_wave_time = current_time + 20000  # 다음 웨이브 타이머 20초로 설정
+        next_wave_time = current_time + 20000
 
     if enemies_spawned < wave and current_time - last_spawn_time >= spawn_interval:
         spawn_enemy()
@@ -133,6 +146,12 @@ while running:
         tower.attack(enemies, projectiles)
 
     screen.fill(GRAY)
+
+    #검은색 경로
+    for i in range(len(path) - 1):
+        pygame.draw.line(screen, BLACK, path[i], path[i + 1], 10)
+
+
     towers.draw(screen)
     enemies.draw(screen)
     projectiles.draw(screen)
