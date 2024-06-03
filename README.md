@@ -6,7 +6,7 @@ Tower Defense Game은 플레이어가 타워를 배치하여 적의 경로를 �
 ## 설치 방법
 
 ### 사전 단계
-[GitHub 저장소](https://github.com/JunWooP0/oss_personal_project) 클론:
+1. [GitHub 저장소](https://github.com/JunWooP0/oss_personal_project) 클론:
     ```bash
     git clone https://github.com/your-username/your-repo.git
     cd your-repo
