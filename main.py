@@ -7,7 +7,6 @@ def is_docker():
 
 pygame.init()
 
-#로컬에서만 오디어 실행
 if not is_docker():
     pygame.mixer.init()
     start_game_sound = pygame.mixer.Sound('sound/start_game.wav')
@@ -26,6 +25,30 @@ BLUE = (0, 0, 255)
 GRAY = (128, 128, 128)
 YELLOW = (255, 255, 0)
 MINT = (0, 255, 255)
+BROWN = (150,75,0)
+
+
+towers = pygame.sprite.Group()
+enemies = pygame.sprite.Group()
+projectiles = pygame.sprite.Group()
+
+path = [
+    (0, 300), (50, 300), (50, 200), (150, 200), (150, 400),
+    (250, 400), (250, 100), (350, 100), (350, 500), (450, 500),
+    (450, 100), (550, 100), (550, 400), (650, 400), (650, 300), 
+    (800, 300)
+]
+
+tower_positions = [
+    (100, 250), (200, 350), (300, 150), (400, 300), (400, 550), (500, 150), (600, 350)
+]
+money = 50
+lives = 10
+wave = 1
+enemies_spawned = 0
+next_wave_time = pygame.time.get_ticks() + 10000
+spawn_interval = 1000
+last_spawn_time = pygame.time.get_ticks()
 
 font = pygame.font.SysFont(None, 36)
 
@@ -55,7 +78,51 @@ def draw_intro_screen():
     if not is_docker():
         start_game_sound.play()
 
+#메뉴 버튼 추가
+def draw_menu_button():
+    menu_button_rect = pygame.Rect(screen.get_width() - 110, screen.get_height() - 50, 100, 40)
+    pygame.draw.rect(screen, WHITE, menu_button_rect)
+    menu_text = font.render('Menu', True, BLACK)
+    screen.blit(menu_text, (screen.get_width() - 100, screen.get_height() - 45))
+    return menu_button_rect
+
+def draw_menu_screen():
+    screen.fill(BLACK)
+    menu_text = font.render('Menu', True, BROWN)
+    resume_text = font.render('Resume', True, WHITE)
+    sound_on_text = font.render('Sound On', True, WHITE)
+    sound_off_text = font.render('Sound Off', True, WHITE)
+    quit_text = font.render('Quit', True, WHITE)
+
+    screen.blit(menu_text, (screen.get_width() // 2 - menu_text.get_width() // 2, 100))
+    screen.blit(resume_text, (screen.get_width() // 2 - resume_text.get_width() // 2, 200))
+    screen.blit(sound_on_text, (screen.get_width() // 2 - sound_on_text.get_width() // 2, 300))
+    screen.blit(sound_off_text, (screen.get_width() // 2 - sound_off_text.get_width() // 2, 350))
+    screen.blit(quit_text, (screen.get_width() // 2 - quit_text.get_width() // 2, 400))
+
+    pygame.display.flip()
+
+def handle_menu_screen_click(pos):
+    global game_state, sound_on, running
+    resume_rect = pygame.Rect(screen.get_width() // 2 - 50, 200, 100, 50)
+    sound_on_rect = pygame.Rect(screen.get_width() // 2 - 50, 300, 100, 50)
+    sound_off_rect = pygame.Rect(screen.get_width() // 2 - 50, 350, 100, 50)
+    quit_rect = pygame.Rect(screen.get_width() // 2 - 50, 400, 100, 50)
+    
+    if resume_rect.collidepoint(pos):
+        game_state = 'playing'
+    elif sound_on_rect.collidepoint(pos):
+        sound_on = True
+    elif sound_off_rect.collidepoint(pos):
+        sound_on = False
+    elif quit_rect.collidepoint(pos):
+        running = False
+
 def main_game():
+
+    global game_state, running, menu_button_rect, towers, enemies, projectiles
+    global money, lives, wave, enemies_spawned, next_wave_time, spawn_interval, last_spawn_time
+
     class Tower(pygame.sprite.Sprite):
         def __init__(self, x, y):
             super().__init__()
@@ -169,25 +236,6 @@ def main_game():
             else:
                 self.kill()
 
-    towers = pygame.sprite.Group()
-    enemies = pygame.sprite.Group()
-    projectiles = pygame.sprite.Group()
-
-    path = [
-        (0, 300), (50, 300), (50, 200), (150, 200), (150, 400),
-        (250, 400), (250, 100), (350, 100), (350, 500), (450, 500),
-        (450, 100), (550, 100), (550, 400), (650, 400), (650, 300), 
-        (800, 300)
-    ]
-
-    tower_positions = [
-        (100, 250), (200, 350), (300, 150), (400,300), (400, 550), (500, 150), (600, 350)
-    ]
-
-    global money
-    global lives
-    money = 50
-    lives = 10
 
     def place_tower(x, y):
         global money
@@ -210,19 +258,25 @@ def main_game():
         enemy = Enemy(path)
         enemies.add(enemy)
 
-    wave = 1
-    enemies_spawned = 0
-    next_wave_time = pygame.time.get_ticks() + 10000
-    spawn_interval = 1000
-    last_spawn_time = pygame.time.get_ticks()
+    def handle_menu_click(pos, menu_button_rect):
+        global game_state
+        if menu_button_rect.collidepoint(pos):
+            game_state = 'menu'
 
-    running = True
-    while running:
+
+    menu_button_rect = draw_menu_button()  # 메뉴 버튼 그리기
+
+    while game_state == 'playing' and running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                pygame.quit()
+                exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    game_state = 'menu'
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 mouse_pos = pygame.mouse.get_pos()
+                handle_menu_click(mouse_pos, menu_button_rect)
                 for pos in tower_positions:
                     if pygame.math.Vector2(mouse_pos).distance_to(pos) < 25:
                         place_tower(*pos)
@@ -276,25 +330,40 @@ def main_game():
         lives_text = font.render(f'Lives: {lives}', True, WHITE)
         screen.blit(lives_text, (screen.get_width() // 2 - lives_text.get_width() // 2, 10))
 
+        menu_button_rect = draw_menu_button()
+
         pygame.display.flip()
         clock.tick(60)
 
-    pygame.quit()
-
 running = True
 show_intro = True
+game_state = 'intro'
+sound_on = True
 
 while running:
-    if show_intro:
+    if game_state == 'intro':
         draw_intro_screen()
-
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-            if show_intro:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                game_state = 'playing'
                 show_intro = False
-                main_game()
+    elif game_state == 'playing':
+        pass
+    elif game_state == 'menu':
+        draw_menu_screen()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                mouse_pos = pygame.mouse.get_pos()
+                handle_menu_screen_click(mouse_pos)
+
+    if game_state == 'playing':
+        main_game()
 
     pygame.display.flip()
     clock.tick(60)
+
+pygame.quit()
