@@ -18,7 +18,6 @@ font = pygame.font.SysFont(None, 36)
 
 clock = pygame.time.Clock()
 
-#시작화면 추가
 def draw_intro_screen():
     screen.fill(BLACK)
     title_text = font.render('Tower Defense Game', True, WHITE)
@@ -101,6 +100,7 @@ def main_game():
             self.speed = 2
             self.max_health = 40
             self.health = self.max_health
+            self.reached_end = False
 
         def update(self):
             if self.path_index < len(self.path) - 1:
@@ -111,6 +111,8 @@ def main_game():
                 self.rect.move_ip(direction)
                 if self.rect.center == target:
                     self.path_index += 1
+            else:
+                self.reached_end = True
 
         def take_damage(self, damage):
             self.health -= damage
@@ -166,7 +168,9 @@ def main_game():
     ]
 
     global money
+    global lives
     money = 50
+    lives = 10
 
     def place_tower(x, y):
         tower = Tower(x, y)
@@ -192,7 +196,6 @@ def main_game():
     next_wave_time = pygame.time.get_ticks() + 10000
     spawn_interval = 1000
     last_spawn_time = pygame.time.get_ticks()
-
 
     running = True
     while running:
@@ -238,10 +241,20 @@ def main_game():
         for enemy in enemies:
             enemy.draw_health_bar(screen)
 
+        # 적이 끝에 도달했을 때 목숨 감소
+        for enemy in enemies.copy():
+            if enemy.reached_end:
+                lives -= 1
+                enemy.kill()
+                if lives <= 0:
+                    running = False
+
         wave_text = font.render(f'Wave: {wave}', True, WHITE)
         screen.blit(wave_text, (10, 10))
         money_text = font.render(f'Money: {money}', True, WHITE)
         screen.blit(money_text, (screen.get_width() - 150, 10))
+        lives_text = font.render(f'Lives: {lives}', True, WHITE)
+        screen.blit(lives_text, (screen.get_width() // 2 - lives_text.get_width() // 2, 10))
 
         pygame.display.flip()
         clock.tick(60)
