@@ -9,7 +9,7 @@ Tower Defense Game은 플레이어가 타워를 배치하여 적의 경로를 �
 1. [GitHub 저장소](https://github.com/JunWooP0/oss_personal_project) 클론:
     ```bash
     git clone https://github.com/JunWooP0/oss_personal_project
-    cd your-repo
+    cd oss_personal_project/
     ```
 
 ### Windows
