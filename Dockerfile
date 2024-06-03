@@ -16,7 +16,6 @@ RUN apt-get update -q \
     xpra \
     xserver-xorg-dev \
     fontconfig \
-    libsdl2-mixer-2.0-0 \ 
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -27,6 +26,7 @@ RUN ln -s /env/bin/python3.9 /usr/bin/python
 ENV LANG C.UTF-8
 
 RUN pip install --no-cache-dir pygame
+
 COPY . /app
 WORKDIR /app
 CMD ["python", "main.py"]
