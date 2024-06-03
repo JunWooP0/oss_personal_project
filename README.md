@@ -4,6 +4,14 @@
 Tower Defense Game은 플레이어가 타워를 배치하여 적의 경로를 방어하는 전략 게임입니다. 플레이어는 타워를 업그레이드하고, 적을 물리치며, 웨이브를 견뎌내야 합니다. 각 타워는 다양한 공격 범위와 속도를 가지며, 적들은 웨이브가 진행될수록 더 강력해집니다. 플레이어는 적을 처치하면 코인을 얻고, 이를 통해 타워를 업그레이드하거나 새로운 타워를 배치할 수 있습니다. 적이 경로의 끝에 도달하면 플레이어의 목숨이 줄어들며, 목숨이 모두 소진되면 게임이 종료됩니다.
 
 ## 설치 방법
+
+### 사전 단계
+ [GitHub 저장소 클론](https://github.com/JunWooP0/oss_personal_project)
+    ```bash
+    git clone https://github.com/your-username/your-repo.git
+    cd your-repo
+    ```
+
 ### Windows
 1. [Python3.12](https://www.python.org/downloads/) 설치
 2. PowerShell에서 필요한 라이브러리 설치:
@@ -32,7 +40,12 @@ Tower Defense Game은 플레이어가 타워를 배치하여 적의 경로를 �
     ```
 
 ### MacOS
-1. Python3 및 필요한 라이브러리 설치
+1. Python3 및 필요한 라이브러리 설치:
+    ```bash
+    brew install python
+    pip3 install pygame
+    pip3 install box2d box2d-kengz
+    ```
 2. 게임 실행:
     ```bash
     python3 main.py
