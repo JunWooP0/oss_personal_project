@@ -44,7 +44,7 @@ tower_positions = [
     (100, 250), (200, 350), (300, 150), (400, 300), (400, 550), (500, 150), (600, 350)
 ]
 money = 50
-lives = 1
+lives = 5
 wave = 1
 enemies_spawned = 0
 next_wave_time = pygame.time.get_ticks() + 10000
