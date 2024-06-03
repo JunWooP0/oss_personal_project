@@ -24,9 +24,9 @@ def draw_intro_screen():
     press_space_text = font.render('Press Spacebar to Start', True, WHITE)
     instructions = [
         "Introduction:",
-        "1. You can touch the mint circle to make tower",
-        "2. Making a tower will cost 50 coins.",
-        "3. Upgrading a tower will cost additional 50 coins each time.",
+        "1. You can touch the mint circle to make and upgrade a tower",
+        "2. Making a upgrading a tower will cost 50 coins.",
+        "3. 10 lives will be given.",
         "4. Enemies will respawn every 15 seconds.",
         "5. You will earn 10 coins each enemy is killed"
     ]
@@ -44,8 +44,8 @@ def main_game():
     class Tower(pygame.sprite.Sprite):
         def __init__(self, x, y):
             super().__init__()
-            self.upgrade_level = -1
-            self.shapes = ['square', 'triangle', 'pentagon', 'hexagon', 'heptagon']
+            self.upgrade_level = 0
+            self.shapes = ['triangle', 'square', 'pentagon', 'hexagon', 'heptagon']
             self.image = self.create_shape(self.shapes[self.upgrade_level])
             self.rect = self.image.get_rect()
             self.rect.center = (x, y)
@@ -57,7 +57,7 @@ def main_game():
             size = 50
             image = pygame.Surface((size, size), pygame.SRCALPHA)
             if shape == 'triangle':
-                points = [(size // 2, 0), (size, size), (0, size)]
+                points = [(size // 1, 0), (size, size), (0, size)]
             elif shape == 'square':
                 points = [(0, 0), (size, 0), (size, size), (0, size)]
             elif shape == 'pentagon':
@@ -97,8 +97,8 @@ def main_game():
             self.path = path
             self.path_index = 0
             self.rect.center = self.path[self.path_index]
-            self.speed = 2 + (wave * 0.05) # 웨이브에 따라 속도 증가
-            self.max_health = 40 + (wave * 2) # 웨이브에 따라 체력 증가
+            self.speed = 2 + (wave * 0.05)
+            self.max_health = 40 + (wave * 2)
             self.health = self.max_health
             self.reached_end = False
 
@@ -173,8 +173,6 @@ def main_game():
     lives = 10
 
     def place_tower(x, y):
-        tower = Tower(x, y)
-        towers.add(tower)
         global money
         for tower in towers:
             if tower.rect.center == (x, y):
