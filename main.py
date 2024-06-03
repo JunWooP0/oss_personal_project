@@ -1,6 +1,14 @@
 import pygame
+import pygame.mixer
 
 pygame.init()
+
+pygame.mixer.init() #다양한 소리 파일
+
+start_game_sound = pygame.mixer.Sound('sound/start_game.wav')
+tower_place_sound = pygame.mixer.Sound('sound/tower_place.wav')
+enemy_hit_sound = pygame.mixer.Sound('sound/enemy_hit.wav')
+enemy_reach_end_sound = pygame.mixer.Sound('sound/enemy_reach_end.wav')
 
 screen = pygame.display.set_mode((800, 600))
 pygame.display.set_caption("Tower Defense Game")
@@ -39,6 +47,7 @@ def draw_intro_screen():
         screen.blit(instruction_text, (50, 400 + i * 30))
 
     pygame.display.flip()
+    start_game_sound.play()
 
 def main_game():
     class Tower(pygame.sprite.Sprite):
@@ -148,6 +157,7 @@ def main_game():
                     if self.target.take_damage(self.damage):
                         global money
                         money += 10
+                        enemy_hit_sound.play()
                     self.kill()
             else:
                 self.kill()
@@ -179,11 +189,13 @@ def main_game():
                 if money >= 50:
                     money -= 50
                     tower.upgrade()
+                    tower_place_sound.play()
                 return
         if money >= 50:
             money -= 50
             tower = Tower(x, y)
             towers.add(tower)
+            tower_place_sound.play()
 
     def spawn_enemy():
         enemy = Enemy(path)
@@ -242,6 +254,7 @@ def main_game():
         for enemy in enemies.copy():
             if enemy.reached_end:
                 lives -= 1
+                enemy_reach_end_sound.play()
                 enemy.kill()
                 if lives <= 0:
                     running = False

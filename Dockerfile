@@ -15,7 +15,8 @@ RUN apt-get update -q \
     wget \
     xpra \
     xserver-xorg-dev \
-    fontconfig \ 
+    fontconfig \
+    libsdl2-mixer-2.0-0 \ 
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
