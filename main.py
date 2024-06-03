@@ -97,8 +97,8 @@ def main_game():
             self.path = path
             self.path_index = 0
             self.rect.center = self.path[self.path_index]
-            self.speed = 2
-            self.max_health = 40
+            self.speed = 2 + (wave * 0.05) # 웨이브에 따라 속도 증가
+            self.max_health = 40 + (wave * 2) # 웨이브에 따라 체력 증가
             self.health = self.max_health
             self.reached_end = False
 
@@ -241,7 +241,6 @@ def main_game():
         for enemy in enemies:
             enemy.draw_health_bar(screen)
 
-        # 적이 끝에 도달했을 때 목숨 감소
         for enemy in enemies.copy():
             if enemy.reached_end:
                 lives -= 1
