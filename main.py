@@ -9,7 +9,7 @@ pygame.init()
 
 if not is_docker():
     pygame.mixer.init()
-    start_game_sound = pygame.mixer.Sound('sound/start_game.wav')
+    start_game_sound = pygame.mixer.Sound('sound/start_game.ogg')
     tower_place_sound = pygame.mixer.Sound('sound/tower_place.wav')
     enemy_hit_sound = pygame.mixer.Sound('sound/enemy_hit.wav')
     enemy_reach_end_sound = pygame.mixer.Sound('sound/enemy_reach_end.wav')
@@ -31,6 +31,7 @@ BROWN = (150,75,0)
 towers = pygame.sprite.Group()
 enemies = pygame.sprite.Group()
 projectiles = pygame.sprite.Group()
+sound_on = True
 
 path = [
     (0, 300), (50, 300), (50, 200), (150, 200), (150, 400),
@@ -43,7 +44,7 @@ tower_positions = [
     (100, 250), (200, 350), (300, 150), (400, 300), (400, 550), (500, 150), (600, 350)
 ]
 money = 50
-lives = 10
+lives = 5
 wave = 1
 enemies_spawned = 0
 next_wave_time = pygame.time.get_ticks() + 10000
@@ -62,7 +63,7 @@ def draw_intro_screen():
         "Introduction:",
         "1. You can touch the mint circle to make and upgrade a tower",
         "2. Making a upgrading a tower will cost 50 coins.",
-        "3. 10 lives will be given.",
+        "3. 5 lives will be given.",
         "4. Enemies will respawn every 15 seconds.",
         "5. You will earn 10 coins each enemy is killed"
     ]
@@ -75,10 +76,7 @@ def draw_intro_screen():
         screen.blit(instruction_text, (50, 400 + i * 30))
 
     pygame.display.flip()
-    if not is_docker():
-        start_game_sound.play()
 
-#메뉴 버튼 추가
 def draw_menu_button():
     menu_button_rect = pygame.Rect(screen.get_width() - 110, screen.get_height() - 50, 100, 40)
     pygame.draw.rect(screen, WHITE, menu_button_rect)
@@ -230,7 +228,7 @@ def main_game():
                     if self.target.take_damage(self.damage):
                         global money
                         money += 10
-                        if not is_docker():
+                        if not is_docker() and sound_on:
                             enemy_hit_sound.play()
                     self.kill()
             else:
@@ -244,14 +242,14 @@ def main_game():
                 if money >= 50:
                     money -= 50
                     tower.upgrade()
-                    if not is_docker():
+                    if not is_docker() and sound_on:
                         tower_place_sound.play()
                 return
         if money >= 50:
             money -= 50
             tower = Tower(x, y)
             towers.add(tower)
-            if not is_docker():
+            if not is_docker() and sound_on:
                 tower_place_sound.play()
 
     def spawn_enemy():
@@ -264,7 +262,7 @@ def main_game():
             game_state = 'menu'
 
 
-    menu_button_rect = draw_menu_button()  # 메뉴 버튼 그리기
+    menu_button_rect = draw_menu_button() 
 
     while game_state == 'playing' and running:
         for event in pygame.event.get():
@@ -317,7 +315,7 @@ def main_game():
         for enemy in enemies.copy():
             if enemy.reached_end:
                 lives -= 1
-                if not is_docker():
+                if not is_docker() and sound_on:
                     enemy_reach_end_sound.play()
                 enemy.kill()
                 if lives <= 0:
@@ -343,6 +341,8 @@ sound_on = True
 while running:
     if game_state == 'intro':
         draw_intro_screen()
+        if not is_docker() and sound_on:
+            start_game_sound.play()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
