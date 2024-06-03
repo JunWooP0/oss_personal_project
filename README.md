@@ -117,18 +117,18 @@ Tower Defense Game은 플레이어가 타워를 배치하여 적의 경로를 �
 
 ### 게임 중간 단계
 - 게임 플레이 중 타워를 배치하고 적을 물리치는 과정입니다.
-https://github.com/JunWooP0/oss_personal_project/assets/163957128/99070d33-8839-4465-94da-15d3ecc70367
+![Gameplay](https://github.com/JunWooP0/oss_personal_project/assets/163957128/e1018fc2-c9b8-4fc7-bf2a-fb8f5e8fe0cc)
+oP0/oss_personal_project/assets/163957128/2f999406-1305-4254-93e8-8df0a1def59b
 - 웨이브 진행 상황과 현재 자원 상태를 확인할 수 있습니다.
 - Menu를 눌러 다양한 기능들을 수행할 수 있습니다.
 ![menu](https://github.com/JunWooP0/oss_personal_project/assets/163957128/4d0ffe0a-2678-41ca-a02b-952f2793abf4)
-https://github.com/JunWooP0/oss_personal_project/assets/163957128/2f999406-1305-4254-93e8-8df0a1def59b
-
+![menu](https://github.com/JunWooP0/oss_personal_project/assets/163957128/d217a648-53d3-42bd-9f61-c35f8283f93b)
 
 ### 게임 오버 화면
 - 플레이어의 라이프가 0이 되었을 때 표시되는 화면입니다.
-https://github.com/JunWooP0/oss_personal_project/assets/163957128/bd1c811d-edd9-41c8-8ca8-b7c9a002fd56
+![live0](https://github.com/JunWooP0/oss_personal_project/assets/163957128/aee3ad90-ea8e-4b74-894f-f6614aad22f5)
 - "Restart" 버튼을 누르면 게임이 처음부터 다시 시작됩니다.
-https://github.com/JunWooP0/oss_personal_project/assets/163957128/0dcf9b79-d7e1-4015-85c0-91a68ed56723
+![end_restart](https://github.com/JunWooP0/oss_personal_project/assets/163957128/dd9c8ba6-7407-4261-816d-d1ec76d3443d)
 - "Exit" 버튼을 클릭하면 게임이 종료됩니다.
 
 
