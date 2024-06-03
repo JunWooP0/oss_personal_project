@@ -44,7 +44,7 @@ tower_positions = [
     (100, 250), (200, 350), (300, 150), (400, 300), (400, 550), (500, 150), (600, 350)
 ]
 money = 50
-lives = 5
+lives = 1
 wave = 1
 enemies_spawned = 0
 next_wave_time = pygame.time.get_ticks() + 10000
@@ -76,6 +76,8 @@ def draw_intro_screen():
         screen.blit(instruction_text, (50, 400 + i * 30))
 
     pygame.display.flip()
+    if not is_docker() and sound_on:
+        start_game_sound.play()
 
 def draw_menu_button():
     menu_button_rect = pygame.Rect(screen.get_width() - 110, screen.get_height() - 50, 100, 40)
@@ -114,6 +116,39 @@ def handle_menu_screen_click(pos):
     elif sound_off_rect.collidepoint(pos):
         sound_on = False
     elif quit_rect.collidepoint(pos):
+        running = False
+
+#GAME OVER 창
+def draw_game_over_screen():
+    screen.fill(BLACK)
+    game_over_text = font.render('GAME OVER', True, RED)
+    restart_text = font.render('Restart', True, WHITE)
+    exit_text = font.render('Exit', True, WHITE)
+
+    screen.blit(game_over_text, (screen.get_width() // 2 - game_over_text.get_width() // 2, 200))
+    screen.blit(restart_text, (screen.get_width() // 2 - restart_text.get_width() // 2, 300))
+    screen.blit(exit_text, (screen.get_width() // 2 - exit_text.get_width() // 2, 350))
+
+    pygame.display.flip()
+
+def handle_game_over_click(pos):
+    global game_state, running, lives, money, wave, enemies_spawned, next_wave_time, spawn_interval, last_spawn_time
+    restart_rect = pygame.Rect(screen.get_width() // 2 - 50, 300, 100, 50)
+    exit_rect = pygame.Rect(screen.get_width() // 2 - 50, 350, 100, 50)
+
+    if restart_rect.collidepoint(pos):
+        game_state = 'playing'
+        lives = 5
+        money = 50
+        wave = 1
+        enemies_spawned = 0
+        next_wave_time = pygame.time.get_ticks() + 10000
+        spawn_interval = 1000
+        last_spawn_time = pygame.time.get_ticks()
+        towers.empty()
+        enemies.empty()
+        projectiles.empty()
+    elif exit_rect.collidepoint(pos):
         running = False
 
 def main_game():
@@ -281,15 +316,16 @@ def main_game():
                         break
 
         current_time = pygame.time.get_ticks()
-        if current_time >= next_wave_time:
-            wave += 1
-            enemies_spawned = 0
-            next_wave_time = current_time + 20000
+        if game_state == 'playing':
+            if current_time >= next_wave_time:
+                wave += 1
+                enemies_spawned = 0
+                next_wave_time = current_time + 20000
 
-        if enemies_spawned < wave and current_time - last_spawn_time >= spawn_interval:
-            spawn_enemy()
-            enemies_spawned += 1
-            last_spawn_time = current_time
+            if enemies_spawned < wave and current_time - last_spawn_time >= spawn_interval:
+                spawn_enemy()
+                enemies_spawned += 1
+                last_spawn_time = current_time
 
         enemies.update()
         projectiles.update()
@@ -319,7 +355,7 @@ def main_game():
                     enemy_reach_end_sound.play()
                 enemy.kill()
                 if lives <= 0:
-                    running = False
+                    game_state = 'game_over'
 
         wave_text = font.render(f'Wave: {wave}', True, WHITE)
         screen.blit(wave_text, (10, 10))
@@ -341,8 +377,6 @@ sound_on = True
 while running:
     if game_state == 'intro':
         draw_intro_screen()
-        if not is_docker() and sound_on:
-            start_game_sound.play()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -350,7 +384,7 @@ while running:
                 game_state = 'playing'
                 show_intro = False
     elif game_state == 'playing':
-        pass
+        main_game()
     elif game_state == 'menu':
         draw_menu_screen()
         for event in pygame.event.get():
@@ -359,9 +393,14 @@ while running:
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 mouse_pos = pygame.mouse.get_pos()
                 handle_menu_screen_click(mouse_pos)
-
-    if game_state == 'playing':
-        main_game()
+    elif game_state == 'game_over':
+        draw_game_over_screen()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                mouse_pos = pygame.mouse.get_pos()
+                handle_game_over_click(mouse_pos)
 
     pygame.display.flip()
     clock.tick(60)
