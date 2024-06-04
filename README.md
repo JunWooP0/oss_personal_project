@@ -6,19 +6,32 @@ Tower Defense Game은 플레이어가 타워를 배치하여 적의 경로를 �
 ## 설치 방법
 
 ### 사전 단계
-1. [GitHub 저장소](https://github.com/JunWooP0/oss_personal_project) 클론:
+- **깃허브 클론**: [GitHub 저장소](https://github.com/JunWooP0/oss_personal_project) :
     ```bash
     git clone https://github.com/JunWooP0/oss_personal_project
     cd oss_personal_project/
     ```
 
+- **SWIG 설치**: Box2D 패키지 설치 시 필요한 `swig`를 설치하려면 다음 명령어를 사용하세요.
+  - Ubuntu 및 다른 Debian 기반 시스템:
+    ```bash
+    sudo apt update
+    sudo apt install swig
+    ```
+  - CentOS 및 다른 RHEL 기반 시스템:
+    ```bash
+    sudo yum install swig
+    ```
+  - macOS:
+    ```bash
+    brew install swig
+    ```
+
 ### Windows
 1. [Python3.12](https://www.python.org/downloads/) 설치:
-    - [Python 다운로드 페이지](https://www.python.org/downloads/)에서 설치 파일을 다운로드합니다.
-    - 다운로드한 설치 파일을 실행합니다.
-    - 설치 프로그램에서 "Add Python to PATH" 옵션을 선택하는 것을 잊지 마세요.
-    - "Install Now"를 클릭하여 설치를 진행합니다.
-    - 설치가 완료되면 명령 프롬프트(또는 PowerShell)를 열고 다음 명령어를 입력하여 Python이 제대로 설치되었는지 확인하세요:
+    - 다운로드 페이지에서 설치 파일을 다운로드하고 설치 프로그램을 실행하여 Python 3.12를 설치하세요.
+    - 설치 시 "Add Python to PATH" 옵션을 선택하는 것을 잊지 마세요.
+    - 설치 후 명령 프롬프트(또는 PowerShell)에서 Python 버전을 확인하세요.
     ```bash
     python --version
     ```
@@ -26,12 +39,16 @@ Tower Defense Game은 플레이어가 타워를 배치하여 적의 경로를 �
     ```bash
     python -m ensurepip --upgrade
     ```
-
+    - 가상 환경 설정 (선택 사항이지만 권장됨):
+    ```bash
+    python -m venv myenv
+    myenv\Scripts\activate  # 가상 환경 활성화
+    ```
 
 2. PowerShell에서 필요한 라이브러리 설치:
     ```bash
     pip3 install pygame
-    pip3 install box2d box2d-kengz
+    pip3 install box2d
     ```
 
 3. 재부팅 후 게임 실행:
@@ -40,7 +57,31 @@ Tower Defense Game은 플레이어가 타워를 배치하여 적의 경로를 �
     ```
 
 ### Linux <sub><sup>(소리x)</sup></sub>
-1. Docker 설치
+#### 옵션 1: Python 직접 설치 및 실행
+1. Python3 및 pip 설치:
+    ```bash
+    sudo apt update
+    sudo apt install python3 python3-pip
+    ```
+
+2. 필요한 라이브러리 설치:
+    ```bash
+    pip3 install pygame
+    pip3 install box2d
+    ```
+
+3. SWIG 설치 (필요 시):
+    ```bash
+    sudo apt install swig
+    ```
+
+4. 게임 실행:
+    ```bash
+    python3 main.py
+    ```
+
+#### 옵션 2: Docker 사용
+1. Docker 설치:
     - Ubuntu 예시:
     ```bash
     sudo apt update
@@ -68,7 +109,7 @@ Tower Defense Game은 플레이어가 타워를 배치하여 적의 경로를 �
     ```bash
     brew install python
     pip3 install pygame
-    pip3 install box2d box2d-kengz
+    pip3 install box2d
     ```
 
 2. 게임 실행:
@@ -80,6 +121,7 @@ Tower Defense Game은 플레이어가 타워를 배치하여 적의 경로를 �
 - **Python 설치**: [Python 공식 문서](https://www.python.org/doc/)에서 더 많은 정보를 찾을 수 있습니다.
 - **Docker 설치**: [Docker 공식 문서](https://docs.docker.com/get-docker/)에서 각 운영체제별 설치 방법을 확인할 수 있습니다.
 - **xhost**: xhost 명령어는 X 서버에 접근 권한을 설정하는 명령어입니다. 이를 통해 Docker 컨테이너가 호스트의 디스플레이에 접근할 수 있도록 합니다.
+
 
 ## 실행 방법
 게임을 실행하려면 `main.py`를 실행하세요. Docker를 사용하는 경우 위의 Linux 설치 방법을 참조하세요.
