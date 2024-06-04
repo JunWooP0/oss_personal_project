@@ -26,6 +26,23 @@ Tower Defense Game은 플레이어가 타워를 배치하여 적의 경로를 �
     ```bash
     brew install swig
     ```
+  - Windows :
+    - 관리자 권한으로 PowerShell을 실행하고 다음 명령어를 입력하여 Chocolatey를 설치합니다:
+      ```powershell
+      Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+      ```
+      - Chocolatey 설치가 완료되면 PowerShell을 재시작하고 다음 명령어를 입력하여 SWIG를 설치합니다:
+      ```powershell
+      choco install swig
+      ```
+
+- **폰트 설치**:
+  - `pygame`에서 기본 폰트를 찾을 수 없는 경우, 시스템에 폰트를 설치하거나 코드에서 폰트를 명시적으로 지정해야 할 수 있습니다.
+  - 예를 들어, Ubuntu에서는 다음 명령어를 사용하여 기본 폰트를 설치할 수 있습니다:
+    ```bash
+    sudo apt install fonts-freefont-ttf
+    ```
+
 
 ### Windows
 1. [Python3.12](https://www.python.org/downloads/) 설치:
@@ -45,15 +62,19 @@ Tower Defense Game은 플레이어가 타워를 배치하여 적의 경로를 �
     myenv\Scripts\activate  # 가상 환경 활성화
     ```
 
-2. PowerShell에서 필요한 라이브러리 설치:
+2. [Microsoft Visual C++ Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) 설치:
+    - "Build Tools for Visual Studio 2022"를 다운로드하여 설치하세요.
+    - 설치 시, "C++ build tools" 옵션을 선택하고 "MSVC v143 - VS 2022 C++ x64/x86 build tools"와 "Windows 10 SDK"를 선택하세요.
+
+3. PowerShell에서 필요한 라이브러리 설치:
     ```bash
     pip3 install pygame
     pip3 install box2d
     ```
 
-3. 재부팅 후 게임 실행:
+4. 재부팅 후 게임 실행:
     ```bash
-    python3 main.py
+    python main.py
     ```
 
 ### Linux <sub><sup>(소리x)</sup></sub>
