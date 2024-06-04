@@ -42,11 +42,6 @@ Tower Defense Game은 플레이어가 타워를 배치하여 적의 경로를 �
     ```bash
     sudo apt install fonts-freefont-ttf
     ```
-  - **fontconfig 설치**:
-    - Ubuntu에서는 `fontconfig` 패키지를 설치하여 `fc-list` 명령어를 사용할 수 있습니다.
-    ```bash
-    sudo apt install fontconfig
-    ```
 
 
 ### Windows
@@ -82,7 +77,7 @@ Tower Defense Game은 플레이어가 타워를 배치하여 적의 경로를 �
     python main.py
     ```
 
-### Linux <sub><sup>(소리x)</sup></sub>
+### Linux
 #### 옵션 1: Python 직접 설치 및 실행
 1. Python3 및 pip 설치:
     ```bash
@@ -90,23 +85,30 @@ Tower Defense Game은 플레이어가 타워를 배치하여 적의 경로를 �
     sudo apt install python3 python3-pip
     ```
 
-2. 필요한 라이브러리 설치:
+2. SWIG 설치 (필요 시):
+    ```bash
+    sudo apt install swig
+    ```
+
+3. 필요한 라이브러리 설치:
     ```bash
     pip3 install pygame
     pip3 install box2d
     ```
 
-3. SWIG 설치 (필요 시):
+
+4. 폰트 설치 (필요 시):
+    - Ubuntu에서는 `fontconfig` 패키지를 설치하여 `fc-list` 명령어를 사용할 수 있습니다.
     ```bash
-    sudo apt install swig
+    sudo apt install fontconfig
     ```
 
-4. 게임 실행:
+5. 게임 실행:
     ```bash
     python3 main.py
     ```
 
-#### 옵션 2: Docker 사용
+#### 옵션 2: Docker 사용 <sub><sup>(소리x)</sup></sub>
 1. Docker 설치:
     - Ubuntu 예시:
     ```bash
