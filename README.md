@@ -42,6 +42,11 @@ Tower Defense Game은 플레이어가 타워를 배치하여 적의 경로를 �
     ```bash
     sudo apt install fonts-freefont-ttf
     ```
+  - **fontconfig 설치**:
+    - Ubuntu에서는 `fontconfig` 패키지를 설치하여 `fc-list` 명령어를 사용할 수 있습니다.
+    ```bash
+    sudo apt install fontconfig
+    ```
 
 
 ### Windows
