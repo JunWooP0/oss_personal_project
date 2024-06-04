@@ -13,12 +13,27 @@ Tower Defense Game은 플레이어가 타워를 배치하여 적의 경로를 �
     ```
 
 ### Windows
-1. [Python3.12](https://www.python.org/downloads/) 설치
+1. [Python3.12](https://www.python.org/downloads/) 설치:
+    - [Python 다운로드 페이지](https://www.python.org/downloads/)에서 설치 파일을 다운로드합니다.
+    - 다운로드한 설치 파일을 실행합니다.
+    - 설치 프로그램에서 "Add Python to PATH" 옵션을 선택하는 것을 잊지 마세요.
+    - "Install Now"를 클릭하여 설치를 진행합니다.
+    - 설치가 완료되면 명령 프롬프트(또는 PowerShell)를 열고 다음 명령어를 입력하여 Python이 제대로 설치되었는지 확인하세요:
+    ```bash
+    python --version
+    ```
+    - pip가 설치되었는지 확인하려면 다음 명령어를 입력하세요:
+    ```bash
+    python -m ensurepip --upgrade
+    ```
+
+
 2. PowerShell에서 필요한 라이브러리 설치:
     ```bash
     pip3 install pygame
     pip3 install box2d box2d-kengz
     ```
+
 3. 재부팅 후 게임 실행:
     ```bash
     python3 main.py
@@ -26,10 +41,19 @@ Tower Defense Game은 플레이어가 타워를 배치하여 적의 경로를 �
 
 ### Linux <sub><sup>(소리x)</sup></sub>
 1. Docker 설치
+    - Ubuntu 예시:
+    ```bash
+    sudo apt update
+    sudo apt install -y docker.io
+    sudo systemctl start docker
+    sudo systemctl enable docker
+    ```
+
 2. Docker 이미지 빌드:
     ```bash
     docker build -t tower-defense-game .
     ```
+
 3. Docker 컨테이너 실행:
     ```bash
     xhost +
@@ -46,10 +70,16 @@ Tower Defense Game은 플레이어가 타워를 배치하여 적의 경로를 �
     pip3 install pygame
     pip3 install box2d box2d-kengz
     ```
+
 2. 게임 실행:
     ```bash
     python3 main.py
     ```
+
+### 추가 설명
+- **Python 설치**: [Python 공식 문서](https://www.python.org/doc/)에서 더 많은 정보를 찾을 수 있습니다.
+- **Docker 설치**: [Docker 공식 문서](https://docs.docker.com/get-docker/)에서 각 운영체제별 설치 방법을 확인할 수 있습니다.
+- **xhost**: xhost 명령어는 X 서버에 접근 권한을 설정하는 명령어입니다. 이를 통해 Docker 컨테이너가 호스트의 디스플레이에 접근할 수 있도록 합니다.
 
 ## 실행 방법
 게임을 실행하려면 `main.py`를 실행하세요. Docker를 사용하는 경우 위의 Linux 설치 방법을 참조하세요.
